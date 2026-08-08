@@ -152,9 +152,21 @@ footer{border-top:1px solid var(--card-border);padding:34px 5vw;text-align:cente
 .fcard .btn:hover{filter:brightness(1.15)}
 .visit-count{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:50px;background:rgba(129,140,248,.12);border:1px solid rgba(129,140,248,.3);font-weight:700;color:var(--accent1);margin-top:12px}
 @media (max-width:600px){.feat-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}}
+.visit-banner{position:fixed;top:14px;left:50%;transform:translate(-50%,-180%);z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:50px;background:linear-gradient(90deg,#6366f1,#22d3ee);color:#0b1020;font-weight:800;font-size:.95rem;box-shadow:0 16px 44px rgba(11,16,32,.55);transition:transform .5s cubic-bezier(.2,.9,.3,1.2);white-space:nowrap;max-width:94vw}
+.visit-banner.show{transform:translate(-50%,0)}
+.visit-banner .vb-eyes{font-size:1.15rem}
+.visit-banner .vb-count{font-size:1.12rem}
+.visit-banner .vb-label{opacity:.85;font-weight:700}
+.visit-banner .vb-close{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:none;background:rgba(11,16,32,.16);color:inherit;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.8rem;font-weight:800;line-height:1;transition:.2s}
+.visit-banner .vb-close:hover{background:rgba(11,16,32,.32)}
 </style>
 </head>
 <body>
+<div id="visitBanner" class="visit-banner" role="status" aria-live="polite">
+  <span class="vb-eyes">👁</span>
+  <span class="vb-text"><b id="visitCount" class="vb-count">0</b> <span class="vb-label">visitors</span></span>
+  <button class="vb-close" onclick="dismissVisit()" aria-label="Close" title="Close">✕</button>
+</div>
 
 <header>
   <a class="logo" href="index.html"><span class="ic"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M14 18a14 14 0 0 1 20 0" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".9"/><path d="M19 23a9 9 0 0 1 10 0" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".55"/><rect x="17" y="24" width="14" height="19" rx="3.5" fill="#fff"/><rect x="19.5" y="27" width="9" height="11" rx="1.8" fill="#fff" opacity=".22"/><circle cx="24" cy="40" r="1.4" fill="#fff"/></svg></span> FREE PHONE NUMBER</a>
@@ -192,7 +204,6 @@ footer{border-top:1px solid var(--card-border);padding:34px 5vw;text-align:cente
     <a href="index.html">🏠 <span data-fnav="home">Home</span></a>
     <a href="index.html#contact">✉ <span data-fnav="contact">Contact</span></a>
   </p>
-  <p id="visitCount" class="visit-count" style="display:none"></p>
   <p>© 2026 FREE PHONE NUMBER — 📱</p>
 </footer>
 
@@ -209,7 +220,8 @@ const $=id=>document.getElementById(id);
 const GOAT=(()=>{try{const c=JSON.parse(localStorage.getItem("fpn_config"))||{};return (c.analytics&&c.analytics.goat)||"";}catch(e){return "";}})();
 if(GOAT){
   (function(){var s=document.createElement("script");s.async=true;s.dataset.goatcounter="https://"+GOAT+".goatcounter.com/count";s.src="https://gc.zgo.at/count.js";document.head.appendChild(s);})();
-  fetch("https://"+GOAT+".goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{var el=document.getElementById("visitCount");if(el&&j&&j.count){el.textContent="👁 "+j.count;el.style.display="inline-flex";}}).catch(function(){});
+  fetch("https://"+GOAT+".goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{var n=document.getElementById("visitCount"),b=document.getElementById("visitBanner"),vb={en:"visitors",ar:"زائر",fr:"visiteurs",es:"visitantes",pt:"visitantes",de:"Besucher",ru:"посетителей",tr:"ziyaretçi",id:"pengunjung",hi:"आगंतुक",ur:"زائر",bn:"দর্শক",zh:"访客",ja:"訪問者",vi:"khách truy cập",fa:"بازدیدکننده",it:"visitatori",ko:"방문자",th:"ผู้เยี่ยมชม"},lbl=b&&b.querySelector(".vb-label");if(lbl&&vb[document.documentElement.lang])lbl.textContent=vb[document.documentElement.lang];if(n&&j&&j.count){n.textContent=(+j.count).toLocaleString();if(b&&!sessionStorage.getItem("fpn_vb")){setTimeout(function(){b.classList.add("show");},1600);}}}).catch(function(){});
+window.dismissVisit=function(){var b=document.getElementById("visitBanner");if(b){b.classList.remove("show");try{sessionStorage.setItem("fpn_vb","1");}catch(e){}}};
 }
 const flag=(cc,w)=>`https://flagcdn.com/w${w||40}/${cc}.png`;
 
