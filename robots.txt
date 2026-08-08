@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ajreedah1-lgtm.github.io/sitemap.xml
+Sitemap: https://freephonenumber.click/sitemap.xml
