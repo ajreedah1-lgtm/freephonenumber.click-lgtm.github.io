@@ -254,19 +254,25 @@ footer{padding:20px 4vw;text-align:center;color:var(--muted);font-size:.8rem}
 
   <section class="panel" id="panel-testimonials">
     <div class="info">
-      <b>آراء الجمهور:</b> تظهر هذه الآراء في قسم «آراء الزوار» أسفل الموقع مع نجوم التقييم. الزوار يرسلون آراءهم عبر النموذج في الموقع، وتُعرض محليًا في متصفحهم فورًا. لاستقبالها <b>فعليًا</b> في بريدك، أنشئ نموذجًا مجانيًا في <b>Formspree</b> (formspree.io) وألصق المعرّف في الحقل أدناه.
+      <b>آراء الجمهور الحقيقية:</b> الزوار يرسلون آراءهم من قسم «آراء الزوار» في الموقع، فتُحفظ في Google Sheets خاص بك وتظهر للجميع <b>بعد موافقتك</b>. لا توجد أي آراء وهمية.
     </div>
     <div class="box">
-      <h3>📨 استقبال آراء الزوار</h3>
+      <h3>🔗 رابط Google Apps Script (Web App)</h3>
       <div class="field">
-        <label>معرّف نموذج Formspree (اختياري)</label>
-        <input type="text" id="formspree" placeholder="e.g. xyzbqkaj" dir="ltr" style="text-align:left">
+        <label>رابط التطبيق الذي ينتهي بـ /exec</label>
+        <input type="text" id="reviewsUrl" placeholder="https://script.google.com/macros/s/XXXXXXXX/exec" dir="ltr" style="text-align:left">
       </div>
-    </div>
-    <div class="box">
-      <h3>⭐ الآراء المعروضة على الموقع</h3>
-      <div id="testiList"></div>
-      <button class="addbtn" onclick="addTesti()">＋ إضافة رأي</button>
+      <ul class="steps">
+        <li>1. افتح sheets.new وأنشئ جدول بيانات جديدًا.</li>
+        <li>2. من القائمة: <b>Extensions → Apps Script</b>.</li>
+        <li>3. احذف الكود الافتراضي والصق كود Apps Script (زر النسخ أدناه) ثم Save.</li>
+        <li>4. اضغط <b>Deploy → New deployment → Web app</b>.</li>
+        <li>5. اجعل <b>Execute as</b>: Me، و<b>Who has access</b>: Anyone، ثم Deploy وانسخ الرابط المنتهي بـ /exec إلى الحقل أعلاه.</li>
+        <li>6. لاعتماد أي رأي: افتح جدول البيانات واجعل قيمة عمود <b>approved</b> = TRUE.</li>
+      </ul>
+      <div class="btnline">
+        <button class="minibtn" onclick="copyGsCode()">📋 نسخ كود Apps Script</button>
+      </div>
     </div>
   </section>
 
@@ -332,13 +338,6 @@ const DEFAULT_SERVICES=[
   {name:"SMS-Receive.net",url:"https://sms-receive.net",platforms:["whatsapp","google","telegram","facebook"],flags:["us","uk","de"],popular:false}
 ];
 
-const DEFAULT_TESTIMONIALS=[
-  {name:"Ahmed K.",country:"eg",rating:5,text:"Verified my WhatsApp account in seconds without exposing my real number. Great directory!",date:"2026-01"},
-  {name:"Maria G.",country:"mx",rating:4,text:"Very useful list. Quackr and SMS24 worked perfectly for Telegram verification.",date:"2026-02"},
-  {name:"Sergey P.",country:"ru",rating:5,text:"Clear categories and platform filters. Bookmarked for all my testing needs.",date:"2026-03"},
-  {name:"Liam O.",country:"us",rating:4,text:"Found free US numbers for Google verification. Highly recommended.",date:"2026-04"}
-];
-
 const BRANDS={
   tiktok:{name:"TikTok",icon:"tiktok",color:"#000000",bg:"#ffffff"},
   youtube:{name:"YouTube",icon:"youtube",color:"#FF0000",bg:"#ffffff"},
@@ -354,13 +353,55 @@ const BRANDS={
 const $=id=>document.getElementById(id);
 const icon=(s,c)=>`https://cdn.simpleicons.org/${s}/${c.replace("#","")}`;
 
+const GS_CODE=`const SHEET_NAME = 'Reviews';
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sh = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+    if (sh.getLastRow() === 0) sh.appendRow(['date', 'name', 'country', 'text', 'rating', 'approved']);
+    sh.appendRow([new Date(), String(data.name || 'Anonymous').slice(0, 60), String(data.country || '').slice(0, 4).toLowerCase(), String(data.text || '').slice(0, 500), Math.max(1, Math.min(5, Number(data.rating) || 5)), false]);
+    return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ ok: false, error: String(err) })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet() {
+  try {
+    const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME);
+    const out = [];
+    if (sh && sh.getLastRow() > 1) {
+      const vals = sh.getDataRange().getValues();
+      for (let i = 1; i < vals.length; i++) {
+        if (String(vals[i][5]).toLowerCase() !== 'true') continue;
+        out.push({ date: String(vals[i][0] || ''), name: String(vals[i][1] || ''), country: String(vals[i][2] || ''), text: String(vals[i][3] || ''), rating: Number(vals[i][4]) || 5 });
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify(out.reverse())).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+
+function copyGsCode(){
+  const ta=document.createElement("textarea");
+  ta.value=GS_CODE;
+  document.body.appendChild(ta);
+  ta.select();
+  try{document.execCommand("copy");}catch(e){}
+  ta.remove();
+  alert("تم نسخ كود Apps Script ✓\nالصقه في محرر Apps Script في جدول البيانات.");
+}
+
 function defaultConfig(){
   return {
     adsense:{enabled:false,publisherId:"",verificationMeta:"",positions:{top:true,mid:true,bottom:false},slots:{top:"",mid:"",bottom:""}},
     analytics:{goat:"free"},
     seo:{siteUrl:"",title:"رقم هاتف مجاني | رسائل SMS لتفعيل التطبيق المفضل",description:"",keywords:"",ogImage:"",verificationMeta:""},
-    formspree:"",
-    content:{services:[],testimonials:[]}
+    reviewsUrl:"",
+    content:{services:[]}
   };
 }
 function loadConfig(){
@@ -423,9 +464,8 @@ function populateForm(){
   $("seoKeywords").value=s.keywords||"";
   $("seoOg").value=s.ogImage||"";
   $("seoVerify").value=s.verificationMeta||"";
-  $("formspree").value=(CFG.formspree||"").replace(/^https:\/\/formspree\.io\/f\//,"");
+  $("reviewsUrl").value=CFG.reviewsUrl||"";
   renderServices();
-  renderTestis();
 }
 
 function collect(){
@@ -445,13 +485,12 @@ function collect(){
     ogImage:$("seoOg").value.trim(),
     verificationMeta:extractMetaValue($("seoVerify").value)
   };
+  CFG.reviewsUrl=$("reviewsUrl").value.trim();
 }
 
 function saveAll(){
   collect();
   CFG.content.services=collectServices();
-  CFG.content.testimonials=collectTestis();
-  CFG.formspree=$("formspree").value.trim().replace(/^https:\/\/formspree\.io\/f\//,"");
   try{localStorage.setItem("fpn_config",JSON.stringify(CFG));}catch(e){}
   const f=$("saveFlash");
   f.style.opacity=1;
@@ -550,64 +589,6 @@ function addService(){
   drawServices();
 }
 
-let testiEditing=[];
-function renderTestis(){
-  const base=(CFG.content&&Array.isArray(CFG.content.testimonials)&&CFG.content.testimonials.length)?CFG.content.testimonials:DEFAULT_TESTIMONIALS;
-  testiEditing=JSON.parse(JSON.stringify(base));
-  drawTestis();
-}
-function drawTestis(){
-  const wrap=$("testiList");
-  wrap.innerHTML="";
-  testiEditing.forEach((t,idx)=>{
-    const row=document.createElement("div");
-    row.className="svc-row";
-    row.dataset.idx=idx;
-
-    const top=document.createElement("div");
-    top.className="top";
-    const mk=(cls,val,ph,dir)=>{const i=document.createElement("input");i.className=cls;i.value=val;i.placeholder=ph;if(dir){i.style.direction=dir;i.style.textAlign="left";}return i;};
-    top.appendChild(mk("t-name",t.name,"الاسم (مثال: Ahmed K.)"));
-    top.appendChild(mk("t-country",t.country||"","رمز الدولة (مثال: eg)"));
-    const rate=document.createElement("input");
-    rate.className="t-rate";rate.type="number";rate.min=1;rate.max=5;rate.value=t.rating||5;rate.title="التقييم من 1 إلى 5";
-    top.appendChild(rate);
-    row.appendChild(top);
-
-    const ta=document.createElement("textarea");
-    ta.className="t-text";ta.style.width="100%";ta.style.marginBottom="10px";
-    ta.value=t.text||"";ta.placeholder="نص الرأي...";ta.rows=2;
-    row.appendChild(ta);
-
-    const act=document.createElement("div");
-    act.className="svc-actions";
-    const del=document.createElement("button");
-    del.className="del";del.textContent="🗑 حذف";
-    del.addEventListener("click",()=>{testiEditing.splice(idx,1);drawTestis();});
-    act.appendChild(del);
-    row.appendChild(act);
-
-    wrap.appendChild(row);
-  });
-}
-function collectTestis(){
-  return testiEditing.map((t,idx)=>{
-    const row=document.querySelector(`#testiList .svc-row[data-idx="${idx}"]`);
-    if(!row)return t;
-    return {
-      name:row.querySelector(".t-name").value.trim()||t.name,
-      country:row.querySelector(".t-country").value.trim().toLowerCase(),
-      rating:Math.max(1,Math.min(5,parseInt(row.querySelector(".t-rate").value,10)||5)),
-      text:row.querySelector(".t-text").value.trim()||t.text,
-      date:t.date||""
-    };
-  });
-}
-function addTesti(){
-  testiEditing.push({name:"Anonymous",country:"",rating:5,text:"",date:""});
-  drawTestis();
-}
-
 function genSitemap(){
   collect();
   const url=(CFG.seo.siteUrl||"https://YOUR-DOMAIN.com").replace(/\/+$/,"");
@@ -643,8 +624,6 @@ async function changePwd(){
 function exportCfg(){
   collect();
   CFG.content.services=collectServices();
-  CFG.content.testimonials=collectTestis();
-  CFG.formspree=$("formspree").value.trim().replace(/^https:\/\/formspree\.io\/f\//,"");
   download("fpn-config.json",JSON.stringify(CFG,null,2),"application/json");
 }
 function importCfg(e){

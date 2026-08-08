@@ -215,6 +215,9 @@ section .hint{color:var(--muted);text-align:center;margin-bottom:28px;font-size:
 .tst-form-box textarea{min-height:80px;resize:vertical}
 .tst-form-box .submit{width:100%;padding:12px;border:none;border-radius:12px;background:var(--grad);color:#0b1020;font-weight:800;font-family:inherit;font-size:.95rem;cursor:pointer}
 .thanks{display:none;margin-top:10px;color:#4ade80;font-weight:700;text-align:center;font-size:.88rem}
+.thanks.err{color:#f87171}
+.rev-note{margin-bottom:16px}
+.tst-empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:26px 12px;font-size:.92rem}
 .footer-note{color:var(--muted);font-size:.92rem;text-align:center;margin-top:10px}
 .visit-count{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:50px;background:rgba(129,140,248,.12);border:1px solid rgba(129,140,248,.3);font-weight:700;color:var(--accent1);margin-top:12px}
 .vbadge-img{height:20px;border-radius:4px;vertical-align:middle}
@@ -339,7 +342,8 @@ footer{
 <section class="testimonials" id="testimonials">
   <h2 data-i18n-ext="tstTitle">What visitors say</h2>
   <p class="hint" data-i18n-ext="tstSub"></p>
-  <div class="tst-grid" id="tstGrid"></div>
+  <p class="hint rev-note" data-i18n-ext="revNote"></p>
+  <div class="tst-grid" id="tstGrid"><div class="tst-empty" id="tstEmpty" data-i18n-ext="revLoad"></div></div>
   <div class="tst-form-box">
     <div class="stars-input" id="starsInput">
       <button type="button" data-r="1">★</button>
@@ -350,6 +354,7 @@ footer{
     </div>
     <form id="tstForm" novalidate>
       <input id="tstName" type="text" data-i18n-ph="formName" placeholder="Your name" maxlength="40">
+      <input id="tstCountry" type="text" data-i18n-ph="formCountry" placeholder="Country code (e.g. US)" maxlength="2" autocomplete="off">
       <textarea id="tstText" data-i18n-ph="formText" placeholder="Your opinion" maxlength="400" required></textarea>
       <button type="submit" class="submit">✉ <span data-i18n-ext="formSubmit">Share opinion</span></button>
       <div class="thanks" id="tstThanks" data-i18n-ext="formThanks"></div>
@@ -553,25 +558,25 @@ const L={
 };
 
 const EXT={
-  en:{views:"views",statServices:"Free services",statCountries:"Countries covered",statPlatforms:"Supported platforms",tstTitle:"What visitors say",tstSub:"Real opinions from people who use these services every day.",formName:"Your name",formText:"Your opinion",formSubmit:"Share opinion",formThanks:"Thank you! Your opinion has been recorded.",verified:"Verified visitor"},
-  ar:{views:"زيارة",statServices:"خدمة مجانية",statCountries:"دولة مدعومة",statPlatforms:"منصة مدعومة",tstTitle:"آراء الزوار",tstSub:"آراء حقيقية من أشخاص يستخدمون هذه الخدمات يوميًا.",formName:"اسمك",formText:"رأيك",formSubmit:"شارك رأيك",formThanks:"شكرًا لك! تم تسجيل رأيك.",verified:"زائر موثّق"},
-  fr:{views:"vues",statServices:"Services gratuits",statCountries:"Pays couverts",statPlatforms:"Plateformes",tstTitle:"Avis des visiteurs",tstSub:"Des avis réels de personnes qui utilisent ces services chaque jour.",formName:"Votre nom",formText:"Votre avis",formSubmit:"Partager",formThanks:"Merci ! Votre avis a été enregistré.",verified:"Visiteur vérifié"},
-  es:{views:"visitas",statServices:"Servicios gratis",statCountries:"Países cubiertos",statPlatforms:"Plataformas",tstTitle:"Opiniones de los visitantes",tstSub:"Opiniones reales de personas que usan estos servicios a diario.",formName:"Tu nombre",formText:"Tu opinión",formSubmit:"Compartir opinión",formThanks:"¡Gracias! Tu opinión fue registrada.",verified:"Visitante verificado"},
-  pt:{views:"visitas",statServices:"Serviços gratuitos",statCountries:"Países cobertos",statPlatforms:"Plataformas",tstTitle:"Opiniões dos visitantes",tstSub:"Opiniões reais de pessoas que usam esses serviços todos os dias.",formName:"Seu nome",formText:"Sua opinião",formSubmit:"Compartilhar",formThanks:"Obrigado! Sua opinião foi registrada.",verified:"Visitante verificado"},
-  de:{views:"Aufrufe",statServices:"Gratis-Dienste",statCountries:"Länder",statPlatforms:"Plattformen",tstTitle:"Meinungen der Besucher",tstSub:"Echte Meinungen von Menschen, die diese Dienste täglich nutzen.",formName:"Ihr Name",formText:"Ihre Meinung",formSubmit:"Teilen",formThanks:"Danke! Ihre Meinung wurde gespeichert.",verified:"Verifizierter Besucher"},
-  ru:{views:"просмотров",statServices:"Бесплатных сервисов",statCountries:"Стран",statPlatforms:"Платформ",tstTitle:"Отзывы посетителей",tstSub:"Реальные мнения людей, которые пользуются этими сервисами каждый день.",formName:"Ваше имя",formText:"Ваш отзыв",formSubmit:"Поделиться",formThanks:"Спасибо! Ваш отзыв сохранён.",verified:"Проверенный посетитель"},
-  tr:{views:"görüntüleme",statServices:"Ücretsiz servis",statCountries:"Ülke",statPlatforms:"Platform",tstTitle:"Ziyaretçi yorumları",tstSub:"Bu servisleri her gün kullanan kişilerin gerçek yorumları.",formName:"Adınız",formText:"Yorumunuz",formSubmit:"Yorum yap",formThanks:"Teşekkürler! Yorumunuz kaydedildi.",verified:"Doğrulanmış ziyaretçi"},
-  id:{views:"kunjungan",statServices:"Layanan gratis",statCountries:"Negara",statPlatforms:"Platform",tstTitle:"Pendapat pengunjung",tstSub:"Pendapat nyata dari orang yang memakai layanan ini setiap hari.",formName:"Nama Anda",formText:"Pendapat Anda",formSubmit:"Bagikan",formThanks:"Terima kasih! Pendapat Anda tersimpan.",verified:"Pengunjung terverifikasi"},
-  hi:{views:"व्यूज़",statServices:"मुफ्त सेवाएँ",statCountries:"देश",statPlatforms:"प्लेटफ़ॉर्म",tstTitle:"आगंतुकों की राय",tstSub:"इन सेवाओं का रोज़ उपयोग करने वालों की असली राय।",formName:"आपका नाम",formText:"आपकी राय",formSubmit:"राय साझा करें",formThanks:"धन्यवाद! आपकी राय दर्ज हो गई।",verified:"सत्यापित आगंतुक"},
-  ur:{views:"ملاحظات",statServices:"مفت خدمات",statCountries:"ممالک",statPlatforms:"پلیٹ فارمز",tstTitle:"زائرین کی آراء",tstSub:"ان خدمات کو روزانہ استعمال کرنے والوں کی حقیقی آراء۔",formName:"آپ کا نام",formText:"آپ کی رائے",formSubmit:"رائے شئیر کریں",formThanks:"شکریہ! آپ کی رائے محفوظ کر لی گئی۔",verified:"تصدیق شدہ زائر"},
-  bn:{views:"ভিউ",statServices:"ফ্রি সার্ভিস",statCountries:"দেশ",statPlatforms:"প্ল্যাটফর্ম",tstTitle:"দর্শকদের মতামত",tstSub:"যারা প্রতিদিন এই সার্ভিস ব্যবহার করেন তাদের বাস্তব মতামত।",formName:"আপনার নাম",formText:"আপনার মতামত",formSubmit:"মতামত দিন",formThanks:"ধন্যবাদ! আপনার মতামত সংরক্ষিত হয়েছে।",verified:"যাচাইকৃত দর্শক"},
-  zh:{views:"浏览量",statServices:"免费服务",statCountries:"覆盖国家",statPlatforms:"支持平台",tstTitle:"访客评价",tstSub:"来自每天使用这些服务的真实用户评价。",formName:"您的名字",formText:"您的评价",formSubmit:"提交评价",formThanks:"谢谢！您的评价已记录。",verified:"已验证访客"},
-  ja:{views:"ビュー",statServices:"無料サービス",statCountries:"対応国",statPlatforms:"対応プラットフォーム",tstTitle:"訪問者の声",tstSub:"毎日このサービスを利用する人々の実際の声。",formName:"お名前",formText:"ご意見",formSubmit:"送信",formThanks:"ありがとうございます！意見を記録しました。",verified:"認証済み訪問者"},
-  vi:{views:"lượt xem",statServices:"Dịch vụ miễn phí",statCountries:"Quốc gia",statPlatforms:"Nền tảng",tstTitle:"Đánh giá khách truy cập",tstSub:"Đánh giá thực từ người dùng các dịch vụ này hằng ngày.",formName:"Tên bạn",formText:"Đánh giá của bạn",formSubmit:"Gửi đánh giá",formThanks:"Cảm ơn! Đánh giá của bạn đã được lưu.",verified:"Khách đã xác minh"},
-  fa:{views:"بازدید",statServices:"سرویس رایگان",statCountries:"کشور",statPlatforms:"پلتفرم",tstTitle:"نظرات بازدیدکنندگان",tstSub:"نظرات واقعی افرادی که هر روز از این سرویس‌ها استفاده می‌کنند.",formName:"نام شما",formText:"نظر شما",formSubmit:"ارسال نظر",formThanks:"متشکریم! نظر شما ثبت شد.",verified:"بازدیدکننده تأییدشده"},
-  it:{views:"visualizzazioni",statServices:"Servizi gratuiti",statCountries:"Paesi",statPlatforms:"Piattaforme",tstTitle:"Opinioni dei visitatori",tstSub:"Opinioni reali di chi usa questi servizi ogni giorno.",formName:"Il tuo nome",formText:"La tua opinione",formSubmit:"Condividi",formThanks:"Grazie! La tua opinione è stata registrata.",verified:"Visitatore verificato"},
-  ko:{views:"조회수",statServices:"무료 서비스",statCountries:"지원 국가",statPlatforms:"플랫폼",tstTitle:"방문자 의견",tstSub:"이 서비스를 매일 사용하는 사람들의 실제 의견.",formName:"이름",formText:"의견",formSubmit:"등록",formThanks:"감사합니다! 의견이 기록되었습니다.",verified:"인증된 방문자"},
-  th:{views:"การเข้าชม",statServices:"บริการฟรี",statCountries:"ประเทศ",statPlatforms:"แพลตฟอร์ม",tstTitle:"ความคิดเห็นผู้เยี่ยมชม",tstSub:"ความคิดเห็นจริงจากผู้ใช้บริการเหล่านี้ทุกวัน",formName:"ชื่อของคุณ",formText:"ความคิดเห็นของคุณ",formSubmit:"ส่งความคิดเห็น",formThanks:"ขอบคุณ! บันทึกความคิดเห็นของคุณแล้ว",verified:"ผู้เยี่ยมชมที่ยืนยันแล้ว"}
+  en:{views:"views",statServices:"Free services",statCountries:"Countries covered",statPlatforms:"Supported platforms",tstTitle:"What visitors say",tstSub:"Real opinions from people who use these services every day.",formName:"Your name",formText:"Your opinion",formSubmit:"Share opinion",formThanks:"Thank you! Your opinion has been recorded.",formCountry:"Country code (e.g. US)",revNote:"Real reviews from real visitors, open to everyone. They appear here once approved.",revEmpty:"No reviews yet — be the first to share your experience!",revLoad:"Loading reviews…",revOffline:"Reviews are temporarily unavailable. Please check back soon.",verified:"Verified visitor"},
+  ar:{views:"زيارة",statServices:"خدمة مجانية",statCountries:"دولة مدعومة",statPlatforms:"منصة مدعومة",tstTitle:"آراء الزوار",tstSub:"آراء حقيقية من أشخاص يستخدمون هذه الخدمات يوميًا.",formName:"اسمك",formText:"رأيك",formSubmit:"شارك رأيك",formThanks:"شكرًا لك! تم تسجيل رأيك.",formCountry:"رمز الدولة (مثل: US)",revNote:"آراء حقيقية من زوار حقيقيين، مفتوحة للجميع. تظهر هنا بعد الموافقة عليها.",revEmpty:"لا توجد آراء بعد — كن أول من يشارك تجربته!",revLoad:"جارٍ تحميل الآراء…",revOffline:"الآراء غير متاحة مؤقتًا. عد لاحقًا.",verified:"زائر موثّق"},
+  fr:{views:"vues",statServices:"Services gratuits",statCountries:"Pays couverts",statPlatforms:"Plateformes",tstTitle:"Avis des visiteurs",tstSub:"Des avis réels de personnes qui utilisent ces services chaque jour.",formName:"Votre nom",formText:"Votre avis",formSubmit:"Partager",formThanks:"Merci ! Votre avis a été enregistré.",formCountry:"Code pays (ex. US)",revNote:"De vrais avis de vrais visiteurs, ouverts à tous. Ils apparaissent ici une fois approuvés.",revEmpty:"Aucun avis pour l'instant — soyez le premier à partager votre expérience !",revLoad:"Chargement des avis…",revOffline:"Les avis sont temporairement indisponibles. Revenez bientôt.",verified:"Visiteur vérifié"},
+  es:{views:"visitas",statServices:"Servicios gratis",statCountries:"Países cubiertos",statPlatforms:"Plataformas",tstTitle:"Opiniones de los visitantes",tstSub:"Opiniones reales de personas que usan estos servicios a diario.",formName:"Tu nombre",formText:"Tu opinión",formSubmit:"Compartir opinión",formThanks:"¡Gracias! Tu opinión fue registrada.",formCountry:"Código de país (ej. US)",revNote:"Opiniones reales de visitantes reales, abiertas a todos. Aparecen aquí una vez aprobadas.",revEmpty:"Aún no hay opiniones: ¡sé el primero en compartir tu experiencia!",revLoad:"Cargando opiniones…",revOffline:"Las opiniones no están disponibles temporalmente. Vuelve pronto.",verified:"Visitante verificado"},
+  pt:{views:"visitas",statServices:"Serviços gratuitos",statCountries:"Países cobertos",statPlatforms:"Plataformas",tstTitle:"Opiniões dos visitantes",tstSub:"Opiniões reais de pessoas que usam esses serviços todos os dias.",formName:"Seu nome",formText:"Sua opinião",formSubmit:"Compartilhar",formThanks:"Obrigado! Sua opinião foi registrada.",formCountry:"Código do país (ex.: US)",revNote:"Avaliações reais de visitantes reais, abertas a todos. Aparecem aqui após aprovação.",revEmpty:"Ainda não há avaliações — seja o primeiro a compartilhar sua experiência!",revLoad:"Carregando avaliações…",revOffline:"As avaliações estão temporariamente indisponíveis. Volte em breve.",verified:"Visitante verificado"},
+  de:{views:"Aufrufe",statServices:"Gratis-Dienste",statCountries:"Länder",statPlatforms:"Plattformen",tstTitle:"Meinungen der Besucher",tstSub:"Echte Meinungen von Menschen, die diese Dienste täglich nutzen.",formName:"Ihr Name",formText:"Ihre Meinung",formSubmit:"Teilen",formThanks:"Danke! Ihre Meinung wurde gespeichert.",formCountry:"Ländercode (z. B. US)",revNote:"Echte Bewertungen von echten Besuchern, offen für alle. Sie erscheinen nach Freigabe.",revEmpty:"Noch keine Bewertungen – teile als Erster deine Erfahrung!",revLoad:"Bewertungen werden geladen…",revOffline:"Bewertungen sind vorübergehend nicht verfügbar. Kommen Sie bald wieder.",verified:"Verifizierter Besucher"},
+  ru:{views:"просмотров",statServices:"Бесплатных сервисов",statCountries:"Стран",statPlatforms:"Платформ",tstTitle:"Отзывы посетителей",tstSub:"Реальные мнения людей, которые пользуются этими сервисами каждый день.",formName:"Ваше имя",formText:"Ваш отзыв",formSubmit:"Поделиться",formThanks:"Спасибо! Ваш отзыв сохранён.",formCountry:"Код страны (напр. US)",revNote:"Реальные отзывы реальных посетителей, открыты для всех. Появляются после проверки.",revEmpty:"Отзывов пока нет — станьте первым!",revLoad:"Загрузка отзывов…",revOffline:"Отзывы временно недоступны. Загляните позже.",verified:"Проверенный посетитель"},
+  tr:{views:"görüntüleme",statServices:"Ücretsiz servis",statCountries:"Ülke",statPlatforms:"Platform",tstTitle:"Ziyaretçi yorumları",tstSub:"Bu servisleri her gün kullanan kişilerin gerçek yorumları.",formName:"Adınız",formText:"Yorumunuz",formSubmit:"Yorum yap",formThanks:"Teşekkürler! Yorumunuz kaydedildi.",formCountry:"Ülke kodu (örn. US)",revNote:"Gerçek ziyaretçilerden gerçek yorumlar, herkese açık. Onaylandıktan sonra burada görünür.",revEmpty:"Henüz yorum yok — deneyiminizi paylaşan ilk kişi olun!",revLoad:"Yorumlar yükleniyor…",revOffline:"Yorumlar geçici olarak kullanılamıyor. Birazdan tekrar deneyin.",verified:"Doğrulanmış ziyaretçi"},
+  id:{views:"kunjungan",statServices:"Layanan gratis",statCountries:"Negara",statPlatforms:"Platform",tstTitle:"Pendapat pengunjung",tstSub:"Pendapat nyata dari orang yang memakai layanan ini setiap hari.",formName:"Nama Anda",formText:"Pendapat Anda",formSubmit:"Bagikan",formThanks:"Terima kasih! Pendapat Anda tersimpan.",formCountry:"Kode negara (mis. US)",revNote:"Ulasan nyata dari pengunjung nyata, terbuka untuk semua. Muncul di sini setelah disetujui.",revEmpty:"Belum ada ulasan — jadilah yang pertama berbagi pengalaman!",revLoad:"Memuat ulasan…",revOffline:"Ulasan untuk sementara tidak tersedia. Kembali lagi nanti.",verified:"Pengunjung terverifikasi"},
+  hi:{views:"व्यूज़",statServices:"मुफ्त सेवाएँ",statCountries:"देश",statPlatforms:"प्लेटफ़ॉर्म",tstTitle:"आगंतुकों की राय",tstSub:"इन सेवाओं का रोज़ उपयोग करने वालों की असली राय।",formName:"आपका नाम",formText:"आपकी राय",formSubmit:"राय साझा करें",formThanks:"धन्यवाद! आपकी राय दर्ज हो गई।",formCountry:"देश कोड (जैसे US)",revNote:"असली आगंतुकों की असली राय, सभी के लिए खुली। अनुमोदन के बाद यहाँ दिखती है।",revEmpty:"अभी कोई राय नहीं — अपना अनुभव साझा करने वाले पहले बनें!",revLoad:"राय लोड हो रही हैं…",revOffline:"राय अस्थायी रूप से उपलब्ध नहीं हैं। जल्द लौटें।",verified:"सत्यापित आगंतुक"},
+  ur:{views:"ملاحظات",statServices:"مفت خدمات",statCountries:"ممالک",statPlatforms:"پلیٹ فارمز",tstTitle:"زائرین کی آراء",tstSub:"ان خدمات کو روزانہ استعمال کرنے والوں کی حقیقی آراء۔",formName:"آپ کا نام",formText:"آپ کی رائے",formSubmit:"رائے شئیر کریں",formThanks:"شکریہ! آپ کی رائے محفوظ کر لی گئی۔",formCountry:"ملک کا کوڈ (مثلاً US)",revNote:"حقیقی زائرین کی حقیقی آراء، سب کے لیے کھلی۔ منظوری کے بعد یہاں ظاہر ہوتی ہیں۔",revEmpty:"ابھی کوئی رائے نہیں — اپنا تجربہ شیئر کرنے والے پہلے بنیں!",revLoad:"آراء لوڈ ہو رہی ہیں…",revOffline:"آراء فی الحال دستیاب نہیں۔ جلد دوبارہ آئیں۔",verified:"تصدیق شدہ زائر"},
+  bn:{views:"ভিউ",statServices:"ফ্রি সার্ভিস",statCountries:"দেশ",statPlatforms:"প্ল্যাটফর্ম",tstTitle:"দর্শকদের মতামত",tstSub:"যারা প্রতিদিন এই সার্ভিস ব্যবহার করেন তাদের বাস্তব মতামত।",formName:"আপনার নাম",formText:"আপনার মতামত",formSubmit:"মতামত দিন",formThanks:"ধন্যবাদ! আপনার মতামত সংরক্ষিত হয়েছে।",formCountry:"দেশের কোড (যেমন US)",revNote:"সত্যিকারের দর্শকদের সত্যিকারের মতামত, সবার জন্য উন্মুক্ত। অনুমোদনের পর এখানে দেখা যায়।",revEmpty:"এখনো কোনো মতামত নেই — অভিজ্ঞতা শেয়ার করা প্রথমজন হোন!",revLoad:"মতামত লোড হচ্ছে…",revOffline:"মতামত সাময়িকভাবে অনুপলব্ধ। শীঘ্রই ফিরে আসুন।",verified:"যাচাইকৃত দর্শক"},
+  zh:{views:"浏览量",statServices:"免费服务",statCountries:"覆盖国家",statPlatforms:"支持平台",tstTitle:"访客评价",tstSub:"来自每天使用这些服务的真实用户评价。",formName:"您的名字",formText:"您的评价",formSubmit:"提交评价",formThanks:"谢谢！您的评价已记录。",formCountry:"国家代码（如 US）",revNote:"真实访客的真实评价，向所有人开放。通过审核后显示在这里。",revEmpty:"还没有评价——成为第一个分享经验的人！",revLoad:"正在加载评价…",revOffline:"评价暂时不可用。请稍后再来。",verified:"已验证访客"},
+  ja:{views:"ビュー",statServices:"無料サービス",statCountries:"対応国",statPlatforms:"対応プラットフォーム",tstTitle:"訪問者の声",tstSub:"毎日このサービスを利用する人々の実際の声。",formName:"お名前",formText:"ご意見",formSubmit:"送信",formThanks:"ありがとうございます！意見を記録しました。",formCountry:"国コード（例：US）",revNote:"実際の訪問者による実際の声、誰でも投稿できます。承認後に表示されます。",revEmpty:"まだ口コミがありません。最初の投稿者になりましょう！",revLoad:"口コミを読み込み中…",revOffline:"口コミは一時的に利用できません。またお越しください。",verified:"認証済み訪問者"},
+  vi:{views:"lượt xem",statServices:"Dịch vụ miễn phí",statCountries:"Quốc gia",statPlatforms:"Nền tảng",tstTitle:"Đánh giá khách truy cập",tstSub:"Đánh giá thực từ người dùng các dịch vụ này hằng ngày.",formName:"Tên bạn",formText:"Đánh giá của bạn",formSubmit:"Gửi đánh giá",formThanks:"Cảm ơn! Đánh giá của bạn đã được lưu.",formCountry:"Mã quốc gia (VD: US)",revNote:"Đánh giá thực từ khách truy cập thực, mở cho tất cả mọi người. Xuất hiện sau khi được duyệt.",revEmpty:"Chưa có đánh giá nào — hãy là người đầu tiên chia sẻ trải nghiệm!",revLoad:"Đang tải đánh giá…",revOffline:"Đánh giá tạm thời không khả dụng. Vui lòng quay lại sau.",verified:"Khách đã xác minh"},
+  fa:{views:"بازدید",statServices:"سرویس رایگان",statCountries:"کشور",statPlatforms:"پلتفرم",tstTitle:"نظرات بازدیدکنندگان",tstSub:"نظرات واقعی افرادی که هر روز از این سرویس‌ها استفاده می‌کنند.",formName:"نام شما",formText:"نظر شما",formSubmit:"ارسال نظر",formThanks:"متشکریم! نظر شما ثبت شد.",formCountry:"کد کشور (مثلاً US)",revNote:"نظرات واقعی بازدیدکنندگان واقعی، باز برای همه. پس از تأیید در اینجا نمایش داده می‌شوند.",revEmpty:"هنوز نظری ثبت نشده — اولین نفر باشید که تجربه خود را به اشتراک می‌گذارد!",revLoad:"در حال بارگذاری نظرات…",revOffline:"نظرات موقتاً در دسترس نیستند. بعداً دوباره بیایید.",verified:"بازدیدکننده تأییدشده"},
+  it:{views:"visualizzazioni",statServices:"Servizi gratuiti",statCountries:"Paesi",statPlatforms:"Piattaforme",tstTitle:"Opinioni dei visitatori",tstSub:"Opinioni reali di chi usa questi servizi ogni giorno.",formName:"Il tuo nome",formText:"La tua opinione",formSubmit:"Condividi",formThanks:"Grazie! La tua opinione è stata registrata.",formCountry:"Codice paese (es. US)",revNote:"Opinioni reali di visitatori reali, aperte a tutti. Appaiono qui dopo l'approvazione.",revEmpty:"Ancora nessuna opinione — sii il primo a condividere la tua esperienza!",revLoad:"Caricamento opinioni…",revOffline:"Opinioni temporaneamente non disponibili. Torna presto.",verified:"Visitatore verificato"},
+  ko:{views:"조회수",statServices:"무료 서비스",statCountries:"지원 국가",statPlatforms:"플랫폼",tstTitle:"방문자 의견",tstSub:"이 서비스를 매일 사용하는 사람들의 실제 의견.",formName:"이름",formText:"의견",formSubmit:"등록",formThanks:"감사합니다! 의견이 기록되었습니다.",formCountry:"국가 코드 (예: US)",revNote:"실제 방문자의 실제 의견, 모두에게 공개. 승인 후 여기에 표시됩니다.",revEmpty:"아직 의견이 없습니다 — 첫 번째로 경험을 공유하세요!",revLoad:"의견을 불러오는 중…",revOffline:"의견을 일시적으로 사용할 수 없습니다. 나중에 다시 방문하세요.",verified:"인증된 방문자"},
+  th:{views:"การเข้าชม",statServices:"บริการฟรี",statCountries:"ประเทศ",statPlatforms:"แพลตฟอร์ม",tstTitle:"ความคิดเห็นผู้เยี่ยมชม",tstSub:"ความคิดเห็นจริงจากผู้ใช้บริการเหล่านี้ทุกวัน",formName:"ชื่อของคุณ",formText:"ความคิดเห็นของคุณ",formSubmit:"ส่งความคิดเห็น",formThanks:"ขอบคุณ! บันทึกความคิดเห็นของคุณแล้ว",formCountry:"رหัสประเทศ (เช่น US)",revNote:"ความคิดเห็นจริงจากผู้เข้าชมจริง เปิดให้ทุกคน พร้อมแสดงหลังผ่านการอนุมัติ",revEmpty:"ยังไม่มีความคิดเห็น — เป็นคนแรกที่แชร์ประสบการณ์ของคุณ!",revLoad:"กำลังโหลดความคิดเห็น…",revOffline:"ความคิดเห็นไม่พร้อมใช้งานชั่วคราว กรุณากลับมาอีกครั้ง",verified:"ผู้เยี่ยมชมที่ยืนยันแล้ว"}
 };
 
 const FNAV={
@@ -595,13 +600,6 @@ const FNAV={
   ko:{home:"홈",esim:"eSIM",contact:"문의"},
   th:{home:"หน้าแรก",esim:"eSIM",contact:"ติดต่อ"}
 };
-
-const DEFAULT_TESTIMONIALS=[
-  {name:"Ahmed K.",country:"eg",rating:5,text:"Verified my WhatsApp account in seconds without exposing my real number. Great directory!",date:"2026-01"},
-  {name:"Maria G.",country:"mx",rating:4,text:"Very useful list. Quackr and SMS24 worked perfectly for Telegram verification.",date:"2026-02"},
-  {name:"Sergey P.",country:"ru",rating:5,text:"Clear categories and platform filters. Bookmarked for all my testing needs.",date:"2026-03"},
-  {name:"Liam O.",country:"us",rating:4,text:"Found free US numbers for Google verification. Highly recommended.",date:"2026-04"}
-];
 
 const BRANDS={
   tiktok:{name:"TikTok",icon:"tiktok",color:"#000000",bg:"#ffffff"},
@@ -888,24 +886,40 @@ function animateCount(id,target){
   },30);
 }
 
-function getTestimonials(){
-  const base=(CONFIG.content&&Array.isArray(CONFIG.content.testimonials)&&CONFIG.content.testimonials.length)?CONFIG.content.testimonials:DEFAULT_TESTIMONIALS;
-  let extra=[];
-  try{extra=JSON.parse(localStorage.getItem("fpn_reviews"))||[];}catch(e){}
-  return extra.concat(base).slice(0,30);
+function reviewsUrl(){
+  return String(CONFIG.reviewsUrl||"").trim();
+}
+function revMsg(key){
+  return EXT[currentLang]&&EXT[currentLang][key]?EXT[currentLang][key]:"";
+}
+function testiCard(t){
+  const verified=EXT[currentLang]?EXT[currentLang].verified:"";
+  const r=Math.max(1,Math.min(5,parseInt(t.rating,10)||5));
+  const cc=String(t.country||"").toLowerCase().trim();
+  return `<article class="tst-card">
+    <div class="stars">${"★".repeat(r)+"☆".repeat(5-r)}</div>
+    <p class="quote">${esc(t.text)}</p>
+    <div class="who">
+      ${cc&&cc.length===2?`<img src="https://flagcdn.com/w40/${esc(cc)}.png" alt="">`:""}
+      <b>${esc(t.name||"Anonymous")}</b>
+      <span class="vbadge">✓ ${esc(verified)}</span>
+    </div>
+  </article>`;
 }
 function renderTestimonials(){
-  const verified=EXT[currentLang]?EXT[currentLang].verified:"";
-  $("tstGrid").innerHTML=getTestimonials().map(t=>`
-    <article class="tst-card">
-      <div class="stars">${"★".repeat(Math.max(1,Math.min(5,t.rating||5))) + "☆".repeat(5-Math.max(1,Math.min(5,t.rating||5)))}</div>
-      <p class="quote">${esc(t.text)}</p>
-      <div class="who">
-        ${t.country?`<img src="https://flagcdn.com/w40/${esc(t.country.toLowerCase())}.png" alt="">`:""}
-        <b>${esc(t.name||"Anonymous")}</b>
-        <span class="vbadge">✓ ${esc(verified)}</span>
-      </div>
-    </article>`).join("");
+  const grid=$("tstGrid");
+  const url=reviewsUrl();
+  if(!url){
+    grid.innerHTML=`<div class="tst-empty">${esc(revMsg("revOffline"))}</div>`;
+    return;
+  }
+  grid.innerHTML=`<div class="tst-empty">${esc(revMsg("revLoad"))}</div>`;
+  fetch(url,{method:"GET"}).then(r=>r.json()).then(list=>{
+    const arr=Array.isArray(list)?list:[];
+    grid.innerHTML=arr.length?arr.map(testiCard).join(""):`<div class="tst-empty">${esc(revMsg("revEmpty"))}</div>`;
+  }).catch(()=>{
+    grid.innerHTML=`<div class="tst-empty">${esc(revMsg("revOffline"))}</div>`;
+  });
 }
 
 let currentRating=5;
@@ -919,24 +933,36 @@ function initTestiForm(){
   $("tstForm").addEventListener("submit",e=>{
     e.preventDefault();
     const name=$("tstName").value.trim()||"Anonymous";
+    const country=$("tstCountry").value.trim().toLowerCase().slice(0,2);
     const text=$("tstText").value.trim();
     if(!text)return;
-    const rec={name,text,rating:currentRating,country:"",date:new Date().toISOString().slice(0,10)};
-    const ep=(CONFIG.formspree||"").trim();
-    if(ep){
-      try{fetch("https://formspree.io/f/"+ep,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(rec)}).catch(()=>{});}catch(err){}
-    }
-    let extra=[];
-    try{extra=JSON.parse(localStorage.getItem("fpn_reviews"))||[];}catch(err){}
-    extra.unshift(rec);
-    try{localStorage.setItem("fpn_reviews",JSON.stringify(extra.slice(0,30)));}catch(err){}
-    $("tstForm").reset();
-    currentRating=5;
-    document.querySelectorAll("#starsInput button").forEach(b=>b.classList.toggle("on",parseInt(b.dataset.r,10)<=5));
+    const rec={name,text,rating:currentRating,country,date:new Date().toISOString().slice(0,10)};
     const th=$("tstThanks");
-    th.style.display="block";
-    setTimeout(()=>{th.style.display="none";},4000);
-    renderTestimonials();
+    const url=reviewsUrl();
+    if(!url){
+      th.classList.add("err");
+      th.textContent=revMsg("revOffline");
+      th.style.display="block";
+      setTimeout(()=>{th.style.display="none";},4000);
+      return;
+    }
+    fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(rec)})
+      .then(r=>r.json())
+      .then(()=>{
+        $("tstForm").reset();
+        currentRating=5;
+        document.querySelectorAll("#starsInput button").forEach(b=>b.classList.toggle("on",parseInt(b.dataset.r,10)<=5));
+        th.classList.remove("err");
+        th.style.display="block";
+        setTimeout(()=>{th.style.display="none";},4000);
+        renderTestimonials();
+      })
+      .catch(()=>{
+        th.classList.add("err");
+        th.textContent=revMsg("revOffline");
+        th.style.display="block";
+        setTimeout(()=>{th.style.display="none";},4000);
+      });
   });
 }
 
