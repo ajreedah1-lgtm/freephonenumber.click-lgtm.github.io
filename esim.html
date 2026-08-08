@@ -217,7 +217,7 @@ footer{border-top:1px solid var(--card-border);padding:34px 5vw;text-align:cente
 
 <script>
 const $=id=>document.getElementById(id);
-const GOAT=(()=>{try{const c=JSON.parse(localStorage.getItem("fpn_config"))||{};return (c.analytics&&c.analytics.goat)||"";}catch(e){return "";}})();
+const GOAT=(()=>{try{const c=JSON.parse(localStorage.getItem("fpn_config"))||{};return (c.analytics&&c.analytics.goat)||"free";}catch(e){return "free";}})();
 if(GOAT){
   (function(){var s=document.createElement("script");s.async=true;s.dataset.goatcounter="https://"+GOAT+".goatcounter.com/count";s.src="https://gc.zgo.at/count.js";document.head.appendChild(s);})();
   fetch("https://"+GOAT+".goatcounter.com/counter/TOTAL.json").then(r=>r.json()).then(j=>{var n=document.getElementById("visitCount"),b=document.getElementById("visitBanner"),vb={en:"visitors",ar:"زائر",fr:"visiteurs",es:"visitantes",pt:"visitantes",de:"Besucher",ru:"посетителей",tr:"ziyaretçi",id:"pengunjung",hi:"आगंतुक",ur:"زائر",bn:"দর্শক",zh:"访客",ja:"訪問者",vi:"khách truy cập",fa:"بازدیدکننده",it:"visitatori",ko:"방문자",th:"ผู้เยี่ยมชม"},lbl=b&&b.querySelector(".vb-label");if(lbl&&vb[document.documentElement.lang])lbl.textContent=vb[document.documentElement.lang];if(n&&j&&j.count){n.textContent=(+j.count).toLocaleString();if(b&&!sessionStorage.getItem("fpn_vb")){setTimeout(function(){b.classList.add("show");},1600);}}}).catch(function(){});
