@@ -178,12 +178,13 @@ footer{padding:20px 4vw;text-align:center;color:var(--muted);font-size:.8rem}
         </div>
         <input type="text" id="slotMid" placeholder="1234567890" dir="ltr">
       </div>
-      <div class="pos-row">
-        <div class="fname">نهاية الصفحة (قبل التذييل) <small>data-ad-slot للإعلان السفلي</small>
-          <label class="switch" style="margin-top:6px"><input type="checkbox" id="posBottom"><span class="sl"></span> مفعّل</label>
-        </div>
-        <input type="text" id="slotBottom" placeholder="1234567890" dir="ltr">
+      <div class="box">
+      <h3>👁 عداد الزيارات (GoatCounter)</h3>
+      <div class="field">
+        <label>معرّف الموقع (بدون .goatcounter.com) — مثال: fpn</label>
+        <input type="text" id="goatId" placeholder="fpn" dir="ltr" style="text-align:left">
       </div>
+      <p class="hint" style="color:var(--muted);font-size:.8rem;margin-top:6px">سجّل مجانًا على <span dir="ltr">goatcounter.com</span> وافتح «إعدادات الموقع» ثم فعّل خيار <b>Allow adding visitor counts</b> ليعمل العداد الموجود أسفل الصفحة.</p>
     </div>
   </section>
 
@@ -356,6 +357,7 @@ const icon=(s,c)=>`https://cdn.simpleicons.org/${s}/${c.replace("#","")}`;
 function defaultConfig(){
   return {
     adsense:{enabled:false,publisherId:"",verificationMeta:"",positions:{top:true,mid:true,bottom:false},slots:{top:"",mid:"",bottom:""}},
+    analytics:{goat:""},
     seo:{siteUrl:"",title:"رقم هاتف مجاني | رسائل SMS لتفعيل التطبيق المفضل",description:"",keywords:"",ogImage:"",verificationMeta:""},
     formspree:"",
     content:{services:[],testimonials:[]}
@@ -414,6 +416,7 @@ function populateForm(){
   $("slotTop").value=slots.top||"";
   $("slotMid").value=slots.mid||"";
   $("slotBottom").value=slots.bottom||"";
+  $("goatId").value=(CFG.analytics&&CFG.analytics.goat)||"";
   $("seoTitle").value=s.title||"FREE PHONE NUMBER";
   $("siteUrl").value=s.siteUrl||"";
   $("seoDesc").value=s.description||"";
@@ -433,6 +436,7 @@ function collect(){
     positions:{top:$("posTop").checked,mid:$("posMid").checked,bottom:$("posBottom").checked},
     slots:{top:$("slotTop").value.trim(),mid:$("slotMid").value.trim(),bottom:$("slotBottom").value.trim()}
   };
+  CFG.analytics={goat:$("goatId").value.trim().replace(/^https?:\/\//,"").replace(/\.goatcounter\.com.*$/,"")};
   CFG.seo={
     siteUrl:$("siteUrl").value.trim(),
     title:$("seoTitle").value.trim(),
