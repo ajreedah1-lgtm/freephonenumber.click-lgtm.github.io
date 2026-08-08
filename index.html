@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" id="metaDescription" content="FREE PHONE NUMBER — Free virtual phone numbers to receive SMS verification codes online. Multi-language directory of free SMS receiving services.">
 <meta name="keywords" id="metaKeywords" content="free phone number, sms receive, virtual number, free sms verification">
-<title id="docTitle">FREE PHONE NUMBER</title>
+<title id="docTitle">رقم هاتف مجاني | رسائل SMS لتفعيل التطبيق المفضل</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📱</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,13 +52,31 @@ header{
   width:38px;height:38px;border-radius:12px;background:var(--grad);
   display:grid;place-items:center;font-size:1.2rem;box-shadow:0 4px 18px rgba(99,102,241,.45);
 }
-.langbox{display:flex;align-items:center;gap:10px}
-.langbox img{width:30px;height:30px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px rgba(255,255,255,.15)}
-.langbox select{
-  background:rgba(255,255,255,.08);color:var(--txt);border:1px solid var(--card-border);
-  border-radius:12px;padding:8px 12px;font-family:inherit;font-size:.9rem;cursor:pointer;outline:none;
+.langbar{
+  display:flex;gap:8px;overflow-x:auto;padding:10px 5vw;
+  border-bottom:1px solid var(--card-border);background:rgba(11,16,32,.5);
+  position:sticky;top:66px;z-index:40;scrollbar-width:thin;justify-content:flex-start;
 }
-.langbox select option{background:#141b33;color:#fff}
+.langbar::-webkit-scrollbar{height:6px}
+.langbar::-webkit-scrollbar-thumb{background:rgba(129,140,248,.4);border-radius:6px}
+.langchip{
+  display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:50px;
+  background:var(--card);border:1px solid var(--card-border);color:var(--muted);
+  font-family:inherit;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s;flex:0 0 auto;
+}
+.langchip img{width:20px;height:15px;border-radius:3px;object-fit:cover}
+.langchip:hover{color:var(--txt);border-color:var(--accent1)}
+.langchip.active{background:var(--grad);color:#0b1020;border-color:transparent}
+.flinks{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.flinks a{color:var(--accent1);font-weight:700;text-decoration:none;transition:.2s}
+.flinks a:hover{color:var(--accent2)}
+.contact{text-align:center;padding:40px 5vw 50px;max-width:720px;margin:0 auto}
+.contact .contact-mail{
+  display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:14px 28px;border-radius:50px;
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.45);color:var(--accent1);
+  font-weight:800;font-size:1.1rem;text-decoration:none;transition:.2s;word-break:break-all;
+}
+.contact .contact-mail:hover{background:var(--grad);color:#0b1020}
 
 .hero{position:relative;padding:70px 5vw 40px;overflow:hidden}
 .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none}
@@ -194,8 +212,7 @@ section .hint{color:var(--muted);text-align:center;margin-bottom:28px;font-size:
 .tst-form-box textarea{min-height:80px;resize:vertical}
 .tst-form-box .submit{width:100%;padding:12px;border:none;border-radius:12px;background:var(--grad);color:#0b1020;font-weight:800;font-family:inherit;font-size:.95rem;cursor:pointer}
 .thanks{display:none;margin-top:10px;color:#4ade80;font-weight:700;text-align:center;font-size:.88rem}
-.counter{color:var(--muted);font-size:.92rem;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
-.counter .cnum{font-weight:800;color:var(--accent1);font-size:1.05rem}
+.footer-note{color:var(--muted);font-size:.92rem;text-align:center;margin-top:10px}
 .vbadge-img{height:20px;border-radius:4px;vertical-align:middle}
 
 footer{
@@ -216,12 +233,10 @@ footer{
 <body>
 
 <header>
-  <div class="logo"><span class="ic">📱</span> FREE PHONE NUMBER</div>
-  <div class="langbox">
-    <img id="curFlag" src="https://flagcdn.com/w40/us.png" alt="language">
-    <select id="langSel" aria-label="Language"></select>
-  </div>
+  <a class="logo" href="index.html"><span class="ic">📱</span> FREE PHONE NUMBER</a>
 </header>
+
+<div class="langbar" id="langBar" aria-label="Languages"></div>
 
 <section class="hero">
   <div class="blob b1"></div>
@@ -330,9 +345,19 @@ footer{
 
 <footer>
   <p data-i18n="footerNote"></p>
+  <p class="flinks">
+    <a href="index.html">🏠 <span data-fnav="home">Home</span></a>
+    <a href="esim.html">📡 <span data-fnav="esim">eSIM Companies</span></a>
+    <a href="#contact">✉ <span data-fnav="contact">Contact</span></a>
+  </p>
   <p>© 2026 FREE PHONE NUMBER — 📱</p>
-  <p class="counter" id="counterRow">👁 <span id="counter" class="cnum">—</span> <span data-i18n-ext="views">views</span></p>
 </footer>
+
+<section class="contact" id="contact">
+  <h2>اتصل بنا · Contact Us</h2>
+  <p>تواصل معنا لأي استفسار أو اقتراح أو طلب إضافة خدمة جديدة.</p>
+  <a class="contact-mail" href="mailto:a@afkar.click">✉ a@afkar.click</a>
+</section>
 
 <noscript><p style="text-align:center;padding:20px">Please enable JavaScript to view the directory.</p></noscript>
 
@@ -347,7 +372,7 @@ const L={
       visit:"Visit",all:"All",search:"Search services...",empty:"No services match your filter.",
       desc:"Free virtual number to receive SMS verification codes online — no sign-up required.",
       footerNote:"These are independent third-party websites. We only share public links — use them responsibly and at your own risk.",popular:"Popular"},
-  ar:{flag:"sa",name:"العربية",tagline:"أرقام هواتف افتراضية مجانية لتفعيل الرسائل النصية",
+  ar:{flag:"sa",name:"العربية",tagline:"رسائل SMS لتفعيل التطبيق المفضل",
       heroSub:"استقبل رموز التفعيل فورًا مع الحفاظ على خصوصية رقمك الحقيقي.",
       cta:"استكشف الأرقام المجانية",b1:"مجاني 100%",b2:"بدون تسجيل",b3:"رموز فورية",
       brandsTitle:"فعّل حسابك على تطبيقك المفضل",brandsSub:"اضغط على أي شعار لتصفية الخدمات أدناه",
@@ -533,6 +558,28 @@ const EXT={
   th:{views:"การเข้าชม",statServices:"บริการฟรี",statCountries:"ประเทศ",statPlatforms:"แพลตฟอร์ม",tstTitle:"ความคิดเห็นผู้เยี่ยมชม",tstSub:"ความคิดเห็นจริงจากผู้ใช้บริการเหล่านี้ทุกวัน",formName:"ชื่อของคุณ",formText:"ความคิดเห็นของคุณ",formSubmit:"ส่งความคิดเห็น",formThanks:"ขอบคุณ! บันทึกความคิดเห็นของคุณแล้ว",verified:"ผู้เยี่ยมชมที่ยืนยันแล้ว"}
 };
 
+const FNAV={
+  en:{home:"Home",esim:"eSIM Companies",contact:"Contact"},
+  ar:{home:"الرئيسية",esim:"الشرائح الإلكترونية",contact:"اتصل بنا"},
+  fr:{home:"Accueil",esim:"eSIM",contact:"Contact"},
+  es:{home:"Inicio",esim:"eSIM",contact:"Contacto"},
+  pt:{home:"Início",esim:"eSIM",contact:"Contato"},
+  de:{home:"Startseite",esim:"eSIM",contact:"Kontakt"},
+  ru:{home:"Главная",esim:"eSIM",contact:"Контакты"},
+  tr:{home:"Ana Sayfa",esim:"eSIM",contact:"İletişim"},
+  id:{home:"Beranda",esim:"eSIM",contact:"Kontak"},
+  hi:{home:"होम",esim:"eSIM",contact:"संपर्क"},
+  ur:{home:"ہوم",esim:"ای سیم",contact:"رابطہ"},
+  bn:{home:"হোম",esim:"eSIM",contact:"যোগাযোগ"},
+  zh:{home:"首页",esim:"eSIM",contact:"联系"},
+  ja:{home:"ホーム",esim:"eSIM",contact:"お問い合わせ"},
+  vi:{home:"Trang chủ",esim:"eSIM",contact:"Liên hệ"},
+  fa:{home:"خانه",esim:"eSIM",contact:"تماس"},
+  it:{home:"Home",esim:"eSIM",contact:"Contatti"},
+  ko:{home:"홈",esim:"eSIM",contact:"문의"},
+  th:{home:"หน้าแรก",esim:"eSIM",contact:"ติดต่อ"}
+};
+
 const DEFAULT_TESTIMONIALS=[
   {name:"Ahmed K.",country:"eg",rating:5,text:"Verified my WhatsApp account in seconds without exposing my real number. Great directory!",date:"2026-01"},
   {name:"Maria G.",country:"mx",rating:4,text:"Very useful list. Quackr and SMS24 worked perfectly for Telegram verification.",date:"2026-02"},
@@ -616,8 +663,6 @@ function apply(lang){
   const T=L[currentLang];
   document.documentElement.lang=currentLang;
   document.documentElement.dir=rtlLangs.includes(currentLang)?"rtl":"ltr";
-  $("curFlag").src=flag(L[currentLang].flag);
-  $("langSel").value=currentLang;
   document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(T[k]!==undefined)el.textContent=T[k];});
   document.querySelectorAll("[data-i18n-ext]").forEach(el=>{const k=el.dataset.i18nExt;if(EXT[currentLang]&&EXT[currentLang][k]!==undefined)el.textContent=EXT[currentLang][k];});
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{
@@ -625,7 +670,12 @@ function apply(lang){
     const v=(T[k]!==undefined)?T[k]:(EXT[currentLang]&&EXT[currentLang][k]);
     if(v!==undefined)el.placeholder=v;
   });
+  document.querySelectorAll("[data-fnav]").forEach(el=>{
+    const k=el.dataset.fnav;
+    if(FNAV[currentLang]&&FNAV[currentLang][k]!==undefined)el.textContent=FNAV[currentLang][k];
+  });
   try{localStorage.setItem("fpn_lang",currentLang);}catch(e){}
+  updateLangBar();
   renderStrip();
   render();
   renderTestimonials();
@@ -702,9 +752,22 @@ function renderFlags(){
   });
 }
 
-function initLangSel(){
-  $("langSel").innerHTML=Object.keys(L).map(k=>`<option value="${k}">${L[k].name}</option>`).join("");
-  $("langSel").addEventListener("change",e=>apply(e.target.value));
+const LANG_ORDER=["ar","en","fr","es","pt","de","ru","tr","id","hi","ur","bn","zh","ja","vi","fa","it","ko","th"];
+function renderLangBar(){
+  $("langBar").innerHTML=LANG_ORDER.map(k=>{
+    const l=L[k];
+    return `<button class="langchip ${k===currentLang?"active":""}" data-lang="${k}" title="${l.name}">
+      <img src="${flag(l.flag,40)}" alt="${l.name}"><span>${l.name}</span>
+    </button>`;
+  }).join("");
+  document.querySelectorAll(".langchip").forEach(c=>{
+    c.addEventListener("click",()=>apply(c.dataset.lang));
+  });
+}
+function updateLangBar(){
+  document.querySelectorAll(".langchip").forEach(c=>{
+    c.classList.toggle("active",c.dataset.lang===currentLang);
+  });
 }
 
 function detect(){
@@ -803,28 +866,6 @@ function animateCount(id,target){
   },30);
 }
 
-function loadCounter(){
-  const el=$("counter");
-  const row=$("counterRow");
-  const showBadge=()=>{
-    row.innerHTML='<img class="vbadge-img" src="https://visitor-badge.laobi.icu/badge?page_id=freephonenumber.visits" alt="visitors">';
-  };
-  const fallback=()=>{
-    try{
-      let v=parseInt(localStorage.getItem("fpn_visits")||"0",10)+1;
-      localStorage.setItem("fpn_visits",v);
-      el.textContent=v.toLocaleString();
-    }catch(e){el.textContent="—";}
-  };
-  const to=setTimeout(showBadge,4500);
-  try{
-    fetch("https://api.countapi.xyz/hit/freephonenumber/visits")
-      .then(r=>r.json())
-      .then(d=>{clearTimeout(to);if(d&&d.value){el.textContent=Number(d.value).toLocaleString();}else{showBadge();}})
-      .catch(()=>{clearTimeout(to);showBadge();});
-  }catch(e){clearTimeout(to);showBadge();}
-}
-
 function getTestimonials(){
   const base=(CONFIG.content&&Array.isArray(CONFIG.content.testimonials)&&CONFIG.content.testimonials.length)?CONFIG.content.testimonials:DEFAULT_TESTIMONIALS;
   let extra=[];
@@ -878,10 +919,9 @@ function initTestiForm(){
 }
 
 renderFlags();
-initLangSel();
+renderLangBar();
 applySeoAndAds();
 renderStats();
-loadCounter();
 initStars();
 initTestiForm();
 detect();
